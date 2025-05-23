@@ -1,4 +1,4 @@
-body{
+body {
     margin: 0;
     min-height: 100vh;
     display: flex;
@@ -9,18 +9,84 @@ body{
     font-family: "PT Sans", cursive;
 }
 
-header{
+.overlay-style {
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 100vh;
+    width: 100%;
+    position: absolute;
+    overflow: hidden;
+}
+
+.overlay-d-none {
+    display: none;
+}
+
+header {
+    background-color: rgb(8, 33, 41);
+    height: 150px;
+    display: flex;
+    justify-content: center;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 100px;
+    padding-right: 100px;
+    width: 100%;
+}
+
+.headline-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    img {
+        height: 70px;
+    }
+}
+
+.input-header {
+    display: flex;
+    align-items: center;
+
+    input {
+        height: 50px;
+        width: 250px;
+        border-radius: 5px;
+    }
+}
+
+main {
+    height: calc(100vh - 250px);
+}
+
+.main-container {
+    padding-left: 100px;
+    padding-right: 100px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: rgb(8, 33, 41);
     height: 100px;
 }
 
-main{
-   
-}
+@media(min-width: 1920px) {
+    .header-container {
+        width: 1920px;
+    }
 
-footer{
-    /*
-    background-color: black;
-    height: 100px;
-    */
+    main {
+        display: flex;
+        justify-content: center;
+    }
+
+    .main-container {
+        width: 1920px;
+    }
 }

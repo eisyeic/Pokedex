@@ -9,6 +9,8 @@
 
     <link rel="icon" type="" href="./assers/pokemon-4635112_640.png">
     <script src="./script.js"></script>
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./styles/pokemon-container.css">
     <!--
     <script src="./scripts/templates.js"></script>
     <script src="./scripts/helperFunction.js"></script>
@@ -20,16 +22,37 @@
 </head>
 
 <body>
+    <div id="overlay-click" class="overlay-style overlay-d-none"></div>
     <header>
-        <div>
-            <img src="./assers/pokemon-4635112_640.png">
-            <img src="./assers/pokedex-logo.svg">
+        <div class="header-container">
+            <div class="headline-header">
+                <img src="./assers/pokemon-4635112_640.png" alt="Pokeball">
+                <img src="./assers/pokedex-logo.svg" alt="Pokedex">
+            </div>
+            <div class="input-header">
+                <input placeholder="Filter me">
+            </div>
         </div>
     </header>
-    <main></main>
-    <section></section>
-    <footer></footer>
+    <main>
+        <section class="main-container">
 
+            <div class="pokemon-container">
+                <div class="pokemon-header">
+                    <h1>#1</h1>
+                    <h1>Pikatshu</h1>
+                </div>
+                <a class="pokemon-img"><img src="./assers/pokemon-4635112_640.png"></a>
+                <div>
+                    <button>renderElement</button>
+                </div>
+            </div>
+
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 Designed by David Eisenbarth</p>
+    </footer>
 </body>
 
 </html>
@@ -48,8 +71,8 @@ git push -u origin main                                             •git pusht
 echo "# Pokedex" >> README.md
 git init
 git add README.md
-git commit -m "first commit"
-git branch -M main
+git
+git commit -m "first commit" branch -M main
 git remote add origin https://github.com/eisyeic/Pokedex.git
 git push -u origin main
 -->
