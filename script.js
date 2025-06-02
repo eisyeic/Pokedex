@@ -1,40 +1,40 @@
 let pokemon = [];
-const BASE_URL = "https://pokeapi.co/api/v2/pokemon?limit=5&offset=0"
+const BASE_URL = "https://pokeapi.co/api/v2/pokemon/"
 
 function init() {
-    loadAPI("");
-    // render();
+    loadAPI();
+
 }
 
 
-async function loadAPI(path = "") {
+async function loadAPI() {
 
-    let pokeResponse = await getAllPokemon(path = "");
-    console.log(pokeResponse);
-    
-    let pokeKeysArray = Object.keys(pokeResponse);
-
-    for (let index = 0; index < pokeKeysArray.length; index++) {
-        pokemon.push(
-            {
-                name: pokeKeysArray[index],
-                url: pokeResponse[pokeKeysArray[index]],
-            }
-        )
+    try {
+        const response = await fetch(BASE_URL);
+        const data = await response.json();
+        const results = data.results;
+        for (let index = 0; index < results.length; index++) {
+            const pokemonResponse = await fetch(results[index].url);
+            const pokemonData = await pokemonResponse.json();
+            
+            pokemon.push({
+                number: index,
+                name: results[index].name,
+                img: pokemonData.sprites.other.home.front_default,
+                types: pokemonData.types.map(type => type.type.name),
+                id: pokemonData.id,
+                height: pokemonData.height,
+                weight: pokemonData.weight
+            });
+        }
+        
+        render();
+    } catch (error) {
+        console.error('Fehler beim Abrufen der Daten:', error);
     }
-
-    console.log(pokemon);
-
-}
-
-async function getAllPokemon(path = "/3") {
-
-    let responseWithObject = await fetch(BASE_URL + path + ".json");
-    let responseToJsonWithObject = await responseWithObject.json();
-    return responseToJsonWithObject;
 }
 
 function render() {
-
+    document.getElementById('main-elements').innerHTML = "";
+    getRenderPokemon();
 }
-
