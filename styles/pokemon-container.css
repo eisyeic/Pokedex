@@ -2,11 +2,12 @@
     background-color:  rgb(8, 33, 41);
     padding: 20px;
     width: 300px;
-    height: 300px;
+    height: 360px;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 20px;
 }
 
 .pokemon-header {
@@ -21,11 +22,100 @@
     align-items: center;
     height: 200px;
     width: 250px;
-    background-color: greenyellow;
     border-radius: 10px;
     
     img{
     height: 200px;
     object-fit: cover;
     }
+}
+
+.types-container-icons{
+    display: flex;
+}
+
+.types-icon {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+     display: flex;
+        justify-content: center;
+        align-items: center;
+    
+    img {
+        height: 30px;
+        width: 30px;
+    }
+}
+
+.background-grass {
+    background-color: rgb(20, 122, 61);
+}
+
+.background-fire {
+    background-color: rgb(171, 27, 42);
+}
+
+.background-water {
+    background-color: rgb(23, 79, 232);
+}
+
+.background-bug {
+    background-color: rgb(30, 74, 38);
+}
+
+.background-dark {
+    background-color: rgb(4, 8, 7);
+}
+
+.background-dragon {
+    background-color: rgb(68, 138, 150);
+}
+
+.background-electric {
+    background-color: rgb(227, 227, 43);
+}
+
+.background-fairy {
+    background-color: rgb(148, 25, 66);
+}
+
+.background-fighting {
+    background-color: rgb(153, 65, 35);
+}
+
+.background-flying {
+    background-color: rgb(72, 103, 122);
+}
+
+.background-ghost {
+    background-color: rgb(51, 50, 110);
+}
+
+.background-ground {
+    background-color: rgb(166, 111, 43);
+}
+
+.background-ice {
+    background-color: rgb(135, 210, 245);
+}
+
+.background-normal {
+    background-color: rgb(117, 81, 91);
+}
+
+.background-poison {
+    background-color: rgb(94, 43, 135);
+}
+
+.background-psychic {
+    background-color: rgb(163, 42, 105);
+}
+
+.background-rock {
+    background-color: rgb(71, 24, 11);
+}
+
+.background-steel {
+    background-color: rgb(95, 117, 109);
 }

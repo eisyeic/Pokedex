@@ -1,16 +1,30 @@
-function getRenderPokemon(){
-    for (let index = 0; index < pokemon.length; index++) {      
+function getRenderPokemon() {
+    const mainElement = document.getElementById('main-elements');
+    const startIndex = pokemon.length - limit;
     
-    document.getElementById('main-elements').innerHTML += 
-    `<div class="pokemon-container">
+    for (let index = startIndex; index < pokemon.length; index++) {
+        mainElement.innerHTML +=
+            `<div class="pokemon-container">
                 <div class="pokemon-header">
-                    <h1>#${index + 1}</h1>
-                    <h1>${pokemon[index].name.toUpperCase()}</h1>
+                    <h1>#${pokemon[index].id}</h1>
+                    <h1>${pokemon[index].name.charAt(0).toUpperCase() + pokemon[index].name.slice(1)}</h1>
                 </div>
-                <a class="pokemon-img"><img src="${pokemon[index].img}"></a>
-                <div>
-                    <button>renderElement</button>
+                <a class="pokemon-img background-${pokemon[index].types[0].type.name}"><img src="${pokemon[index].img}"></a>
+                <div class="types-container-icons" id="types-elements-${index}">
+                    
                 </div>
+            </div>`;
+
+        getRenderTypesElements(index);
+    }
+}
+
+function getRenderTypesElements(index) {
+    for (let i = 0; i < pokemon[index].types.length; i++) {
+        document.getElementById(`types-elements-${index}`).innerHTML +=
+            `<div class="types-icon background-${pokemon[index].types[0].type.name}">
+            <img src="./assers/icons/${pokemon[index].types[i].type.name}.svg">
             </div>`
+    }
 }
-}
+
