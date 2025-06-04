@@ -1,5 +1,5 @@
 .pokemon-container {
-    background-color:  rgb(8, 33, 41);
+    background-color: rgb(8, 33, 41);
     padding: 20px;
     width: 300px;
     height: 360px;
@@ -23,25 +23,26 @@
     height: 200px;
     width: 250px;
     border-radius: 10px;
-    
-    img{
-    height: 200px;
-    object-fit: cover;
+
+    img {
+        height: 200px;
+        object-fit: cover;
     }
 }
 
-.types-container-icons{
+.types-container-icons {
     display: flex;
+    gap: 10px;
 }
 
 .types-icon {
     height: 50px;
     width: 50px;
     border-radius: 50%;
-     display: flex;
-        justify-content: center;
-        align-items: center;
-    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     img {
         height: 30px;
         width: 30px;

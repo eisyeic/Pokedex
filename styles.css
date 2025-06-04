@@ -39,12 +39,19 @@ header {
 .headline-header {
     display: flex;
     align-items: center;
-    gap: 20px;
 
     img {
         height: 70px;
     }
 }
+
+.headline-header a {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    text-decoration: none;
+}
+
 
 .input-header {
     display: flex;
@@ -60,11 +67,14 @@ header {
 main {
     min-height: calc(100vh - 250px);
     height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding-left: 100px;
+    padding-right: 100px;
 }
 
 .main-container {
-    padding-left: 100px;
-    padding-right: 100px;
     padding-top: 50px;
     padding-bottom: 50px;
     display: flex;
@@ -78,6 +88,26 @@ main {
     padding: 50px;
 }
 
+.load-window-container {
+    animation: rotate 5s linear infinite;
+    filter: drop-shadow(0 0 10px #00ffff) brightness(1.2) contrast(1.2) hue-rotate(45deg);
+
+    img {
+        height: 250px;
+        width: 200px;
+    }
+}
+
+.load-window-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.d-none {
+    display: none !important;
+}
+
 .next-pokemon-button {
     height: 50px;
     background-color: rgb(255, 202, 28);
@@ -86,12 +116,14 @@ main {
     padding: 16px 32px;
     text-align: center;
     font-size: 16px;
-   
-  
-    
     text-decoration: none;
     cursor: pointer;
+    border-radius: 20px;
 }
+.next-pokemon-button:hover {
+        background-color: rgba(255, 202, 28, 0.305);
+        transform: scale(1.1) translateX(5px);
+    }
 
 footer {
     display: flex;
@@ -99,6 +131,16 @@ footer {
     align-items: center;
     background-color: rgb(8, 33, 41);
     height: 100px;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 @media(min-width: 1920px) {

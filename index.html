@@ -29,17 +29,25 @@
     <header>
         <div class="header-container">
             <div class="headline-header">
-                <img src="./assers/pokemon-4635112_640.png" alt="Pokeball">
-                <img src="./assers/pokedex-logo.svg" alt="Pokedex">
+                <a href="index.html">
+                    <img src="./assers/pokemon-4635112_640.png" alt="Pokeball">
+                    <img src="./assers/pokedex-logo.svg" alt="Pokedex">
+                </a>
             </div>
             <div class="input-header">
-                <input placeholder="Filter me">
+                <input id="search-input" type="text" placeholder="Filter me" onkeyup="filterPokemon()">
             </div>
         </div>
     </header>
     <main>
         <section class="main-container" id="main-elements">
 
+        </section>
+        <section class="load-window-container d-none" id="load-window-container">
+            <div class="load-window-box">
+                <img src="./assers/pokemon-4635112_640.png" alt="Load Pokemon Ball">
+                <p>Loading Pokemons</p>
+            </div>
         </section>
         <section class="next-pokemon-button-container">
             <button class="next-pokemon-button" id="next-pokemon" onclick="loadMorePokemon()">MORE POKEMON</button>
