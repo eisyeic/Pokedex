@@ -33,7 +33,11 @@ async function loadAPI() {
                 types: pokemonData.types,
                 id: pokemonData.id,
                 height: pokemonData.height,
-                weight: pokemonData.weight
+                weight: pokemonData.weight,
+                abilities: pokemonData.abilities,
+                base_experience: pokemonData.base_experience,
+                stats: pokemonData.stats,
+                evolution_chain: pokemonData
             });
         }
 
@@ -74,13 +78,21 @@ async function filterPokemon() {
     } else {
         showLoadingScreen();
         try {
-            const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1000`);
-            const data = await response.json();
-            const allResults = data.results;
+            let response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1000`);
+            let data = await response.json();
+            let allResults = data.results;
 
-            const filteredResults = allResults.filter(p =>
-                p.name.toLowerCase().startsWith(searchTerm)
-            );
+            
+            let filteredResults = [];
+
+            for (let i = 0; i < allResults.length; i++) {
+                let pokemonName = allResults[i].name.toLowerCase();
+
+                if (pokemonName.startsWith(searchTerm)) {
+                    filteredResults.push(allResults[i]);
+                }
+            }
+
 
             pokemon = [];
 
@@ -94,7 +106,11 @@ async function filterPokemon() {
                     types: pokemonData.types,
                     id: pokemonData.id,
                     height: pokemonData.height,
-                    weight: pokemonData.weight
+                    weight: pokemonData.weight,
+                    abilities: pokemonData.abilities,
+                    base_experience: pokemonData.base_experience,
+                    stats: pokemonData.stats,
+                    evolution_chain: pokemonData.species.evolution_chain.url,
                 });
             }
 
@@ -105,4 +121,12 @@ async function filterPokemon() {
         hideLoadingScreen();
     }
 }
+
+function getStatValue(index, statIndex) {
+    if (!pokemon[index].stats || !pokemon[index].stats[statIndex]) {
+        return 'N/A';
+    }
+    return pokemon[index].stats[statIndex].base_stat;
+}
+
 
