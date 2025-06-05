@@ -40,7 +40,7 @@ async function loadAPI() {
             for (let i = 0; i < pokemonData.moves.length; i++) {
                 moveNames.push(pokemonData.moves[i].move.name);
             }
-            pokemonPush(index, results, pokemonData, moveNames);
+            pokemonFirstPush(index, results, pokemonData, moveNames);
         }
 
         render();
@@ -53,9 +53,9 @@ async function loadAPI() {
     }
 }
 
-// Push Data in the pokemon array
+// Push first Data in the pokemon array
 
-function pokemonPush(index, results, pokemonData, moveNames) {
+function pokemonFirstPush(index, results, pokemonData, moveNames) {
     pokemon.push({
         name: results[index].name,
         img: pokemonData.sprites.other.home.front_default,
@@ -151,7 +151,6 @@ async function filterPokemon() {
                 for (let j = 0; j < pokemonData.moves.length; j++) {
                     moveNames.push(pokemonData.moves[j].move.name);
                 }
-                pokemonPush(index, results, pokemonData, moveNames)
             }
             render();
         } catch (error) {
@@ -161,6 +160,23 @@ async function filterPokemon() {
     }
 }
 
+// Push second Data in the pokemon array
+
+function pokemonSecondPush(i, filteredResults, pokemonData, moveNames) {
+
+    pokemon.push({
+        name: filteredResults[i].name,
+        img: pokemonData.sprites.other.home.front_default,
+        types: pokemonData.types,
+        id: pokemonData.id,
+        height: pokemonData.height,
+        weight: pokemonData.weight,
+        abilities: pokemonData.abilities,
+        base_experience: pokemonData.base_experience,
+        stats: pokemonData.stats,
+        moves: moveNames,
+    });
+}
 
 //Gets the stat value for a specific Pokemon and stat index, with error handling
 
