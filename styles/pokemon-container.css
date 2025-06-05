@@ -168,11 +168,27 @@ body:not(.overlay-open) .pokemon-img img:hover {
 
 .pokemon-details-types {
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     background-color: rgb(8, 33, 41);
     padding-top: 10px;
     padding-bottom: 10px;
+    gap: 20px;
+}
+
+.pokemon-details-types-button {
+    height: 50px;
+    width: 50px;
+    cursor: pointer;
+    filter:grayscale()
+}
+
+.pokemon-details-types-button:hover{
+    transform: scale(1.1);
+}
+
+.pokemon-details-types-icons {
+    display: flex;
     gap: 20px;
 }
 

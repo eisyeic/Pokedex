@@ -61,6 +61,8 @@ header {
 .input-header {
     display: flex;
     align-items: center;
+    flex-direction: column;
+    justify-content: center;
 
     input {
         height: 50px;
@@ -68,6 +70,18 @@ header {
         border-radius: 5px;
     }
 }
+
+.search-hint {
+    font-size: 12px;
+    color: rgb(255, 202, 28);
+    margin-top: 5px;
+    display: block;
+}
+
+.d-none {
+    display: none !important;
+}
+
 
 main {
     min-height: calc(100vh - 250px);

@@ -69,7 +69,13 @@ function getRenderPokemonDetails(index) {
             <img src="${pokemon[index].img}" alt="${pokemon[index].name}">
         </div>
         <div class="pokemon-details-types">
-            ${getPokemonTypesHTML(index)}
+            <div onclick="lastPokemon()">
+                <img class="pokemon-details-types-button" src="./assers/icons/pfeil_links.png">
+            </div>
+            <div class="pokemon-details-types-icons">${getPokemonTypesHTML(index)}</div>
+            <div onclick="nextPokemon()">
+                <img class="pokemon-details-types-button" src="./assers/icons/pfeil_rechts.png">
+            </div>
         </div>
     
         <div class="pokemon-tabs">

@@ -2,6 +2,7 @@ let offset = 0;
 let limit = 20;
 let BASE_URL = `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`;
 let pokemon = [];
+let currentPokemonIndex = 0;
 
 //Initializes the application by loading the API data and setting up the search input event
 
@@ -12,9 +13,16 @@ function init() {
 
 //Loads more Pokemon by increasing the offset and calling the API
 
+/**
+ * Loads more Pokemon by increasing the offset and calling the API
+ */
 function loadMorePokemon() {
     offset += limit;
-    loadAPI();
+    const moreButton = document.getElementById('next-pokemon');
+    moreButton.classList.add('d-none');
+    loadAPI().then(() => {
+        moreButton.classList.remove('d-none');
+    });
 }
 
 //Fetches Pokemon data from the API and stores it in the pokemon array
@@ -35,27 +43,34 @@ async function loadAPI() {
             for (let i = 0; i < pokemonData.moves.length; i++) {
                 moveNames.push(pokemonData.moves[i].move.name);
             }
-
-            pokemon.push({
-                name: results[index].name,
-                img: pokemonData.sprites.other.home.front_default,
-                types: pokemonData.types,
-                id: pokemonData.id,
-                height: pokemonData.height,
-                weight: pokemonData.weight,
-                abilities: pokemonData.abilities,
-                base_experience: pokemonData.base_experience,
-                stats: pokemonData.stats,
-                moves: moveNames,
-            });
+            pokemonPush(index, results, pokemonData, moveNames);
         }
 
         render();
         hideLoadingScreen();
+        return Promise.resolve(); // Return a resolved promise
     } catch (error) {
         console.error('Fehler beim Abrufen der Daten:', error);
         hideLoadingScreen();
+        return Promise.reject(error); // Return a rejected promise
     }
+}
+
+// Push Data in the pokemon object
+
+function pokemonPush(index, results, pokemonData, moveNames) {
+    pokemon.push({
+        name: results[index].name,
+        img: pokemonData.sprites.other.home.front_default,
+        types: pokemonData.types,
+        id: pokemonData.id,
+        height: pokemonData.height,
+        weight: pokemonData.weight,
+        abilities: pokemonData.abilities,
+        base_experience: pokemonData.base_experience,
+        stats: pokemonData.stats,
+        moves: moveNames,
+    });
 }
 
 //Renders the Pokemon cards to the main element and handles the visibility of the "More Pokemon" button
@@ -97,14 +112,23 @@ function hideLoadingScreen() {
 //Filters Pokemon based on the search input and renders the filtered results
 
 async function filterPokemon() {
-    const searchInput = document.getElementById('search-input');
-    const searchTerm = searchInput.value.toLowerCase();
+    let searchInput = document.getElementById('search-input');
+    let searchTerm = searchInput.value.toLowerCase();
+    let searchHint = document.getElementById('search-hint');
+
+    if (searchTerm.length > 0 && searchTerm.length < 3) {
+        searchHint.textContent = "Please enter at least 3 letters";
+        searchHint.classList.remove('d-none');
+        return;
+    } else {
+        searchHint.classList.add('d-none');
+    }
 
     if (searchTerm === '') {
         offset = 0;
         pokemon = [];
         loadAPI();
-    } else {
+    } else if (searchTerm.length >= 3) {
         showLoadingScreen();
         try {
             let response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1000`);
@@ -130,19 +154,7 @@ async function filterPokemon() {
                 for (let j = 0; j < pokemonData.moves.length; j++) {
                     moveNames.push(pokemonData.moves[j].move.name);
                 }
-
-                pokemon.push({
-                    name: filteredResults[i].name,
-                    img: pokemonData.sprites.other.home.front_default,
-                    types: pokemonData.types,
-                    id: pokemonData.id,
-                    height: pokemonData.height,
-                    weight: pokemonData.weight,
-                    abilities: pokemonData.abilities,
-                    base_experience: pokemonData.base_experience,
-                    stats: pokemonData.stats,
-                    moves: moveNames,
-                });
+                pokemonPush(index, results, pokemonData, moveNames)
             }
             render();
         } catch (error) {
@@ -151,6 +163,7 @@ async function filterPokemon() {
         hideLoadingScreen();
     }
 }
+
 
 //Gets the stat value for a specific Pokemon and stat index, with error handling
 
@@ -167,6 +180,7 @@ function openDetails(index) {
     document.getElementById('overlay-click').classList.remove('d-none');
     document.body.classList.add('overlay-open');
     document.body.style.overflow = 'hidden';
+    currentPokemonIndex = index; // Store the current index
     getRenderPokemonDetails(index);
 }
 
@@ -238,4 +252,30 @@ function getPokemonAbilities(index) {
         }
     }
     return abilities;
+}
+
+//Navigates to the previous Pokemon in the list when viewing details
+
+function lastPokemon() {
+    let currentIndex = getCurrentPokemonIndex();
+    let prevIndex = (currentIndex - 1 + pokemon.length) % pokemon.length;
+
+    closeDetails();
+    openDetails(prevIndex);
+}
+
+//Navigates to the next Pokemon in the list when viewing details
+
+function nextPokemon() {
+    let currentIndex = getCurrentPokemonIndex();
+    let nextIndex = (currentIndex + 1) % pokemon.length;
+
+    closeDetails();
+    openDetails(nextIndex);
+}
+
+// Return Pokemon Index in the Array
+
+function getCurrentPokemonIndex() {
+    return currentPokemonIndex;
 }
