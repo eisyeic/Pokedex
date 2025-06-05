@@ -13,9 +13,6 @@ function init() {
 
 //Loads more Pokemon by increasing the offset and calling the API
 
-/**
- * Loads more Pokemon by increasing the offset and calling the API
- */
 function loadMorePokemon() {
     offset += limit;
     const moreButton = document.getElementById('next-pokemon');
@@ -56,7 +53,7 @@ async function loadAPI() {
     }
 }
 
-// Push Data in the pokemon object
+// Push Data in the pokemon array
 
 function pokemonPush(index, results, pokemonData, moveNames) {
     pokemon.push({
