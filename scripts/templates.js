@@ -1,3 +1,5 @@
+//Renders Pokemon cards for newly loaded Pokemon to the main element
+
 function getRenderPokemon() {
     const mainElement = document.getElementById('main-elements');
     const startIndex = pokemon.length - limit;
@@ -19,6 +21,8 @@ function getRenderPokemon() {
     }
 }
 
+//Renders the type icons for a specific Pokemon
+
 function getRenderTypesElements(index) {
     for (let i = 0; i < pokemon[index].types.length; i++) {
         document.getElementById(`types-elements-${index}`).innerHTML +=
@@ -28,10 +32,12 @@ function getRenderTypesElements(index) {
     }
 }
 
+// Renders a single Pokemon card with click functionality to open details
+
 function renderPokemonCard(index) {
     const mainElement = document.getElementById('main-elements');
     mainElement.innerHTML +=
-        `<div class="pokemon-container" onclick="getRenderPokemonDetails(${index})">
+        `<div class="pokemon-container" onclick="openDetails(${index})">
             <div class="pokemon-header">
                 <h1>#${pokemon[index].id}</h1>
                 <h1>${pokemon[index].name.charAt(0).toUpperCase() + pokemon[index].name.slice(1)}</h1>
@@ -45,14 +51,12 @@ function renderPokemonCard(index) {
     getRenderTypesElements(index);
 }
 
+// Renders the detailed view of a Pokemon in the overlay
+
 function getRenderPokemonDetails(index) {
-    // Zeige das Overlay an
     document.getElementById('overlay-click').classList.remove('overlay-d-none');
+    let detailsContainer = document.getElementById('pokemon-details-container');
 
-    // Hole den Container für die Details
-    const detailsContainer = document.getElementById('pokemon-details-container');
-
-    // Fülle den Container mit den Pokémon-Details
     detailsContainer.innerHTML = `
         <div class="pokemon-details-header">
             <div class="pokemon-details-header-headline">
@@ -69,9 +73,9 @@ function getRenderPokemonDetails(index) {
         </div>
     
         <div class="pokemon-tabs">
-            <div id="main-button" class="tab-button active" onclick="changeTab('main-tab', 'main-button', ${index})">Main</div>
-            <div id="stats-button" class="tab-button" onclick="changeTab('stats-tab', 'stats-button', ${index})">Stats</div>
-            <div id="evo-button" class="tab-button" onclick="changeTab('evo-tab', 'evo-button', ${index})">Evolution</div>
+            <div id="main-button" class="tab-button active" onclick="changeTab('main-tab', 'main-button')">Main</div>
+            <div id="stats-button" class="tab-button" onclick="changeTab('stats-tab', 'stats-button')">Stats</div>
+            <div id="moves-button" class="tab-button" onclick="changeTab('moves-tab', 'moves-button')">Moves</div>
         </div>
         
         <div class="tab-content">
@@ -145,51 +149,16 @@ function getRenderPokemonDetails(index) {
             </div>
 
 
-            <div id="evo-tab" class="d-none-tab">
-                <div class="pokemon-evolution">
-                    <h3>Evolution Chain:</h3>
-                    <p>Evolution data not available</p>
+            <div id="moves-tab" class="d-none-tab">
+                <div class="pokemon-moves">
+                    <div class="moves-container">${getPokemonMoves(index)}
+                    </div>
                 </div>
             </div>
         </div>`;
 }
 
-// Funktion zum Umschalten der Tabs
-function changeTab(tabId, buttonId, index) {
-    // Alle Tab-Inhalte ausblenden
-    document.getElementById('main-tab').classList.remove('active');
-    document.getElementById('stats-tab').classList.remove('active');
-    document.getElementById('evo-tab').classList.remove('active');
-    
-    // Alle Tab-Buttons deaktivieren
-    document.getElementById('main-button').classList.remove('active');
-    document.getElementById('stats-button').classList.remove('active');
-    document.getElementById('evo-button').classList.remove('active');
-    
-    // Gewählten Tab-Inhalt anzeigen
-    document.getElementById(tabId).classList.add('active');
-    
-    // Gewählten Button aktivieren
-    document.getElementById(buttonId).classList.add('active');
-}
-
-function getPokemonAbilities(index) {
-    let abilities = '';
-    for (let i = 0; i < pokemon[index].abilities.length; i++) {
-        abilities += pokemon[index].abilities[i].ability.name;
-        if (i < pokemon[index].abilities.length - 1) {
-            abilities += ', ';
-        }
-    }
-    return abilities;
-}
-
-
-
-// Funktion zum Schließen der Details
-function closeDetails() {
-    document.getElementById('overlay-click').classList.add('overlay-d-none');
-}
+// Generates HTML for displaying a Pokemon's type icons
 
 function getPokemonTypesHTML(index) {
     let typesHTML = '';
