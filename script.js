@@ -27,31 +27,50 @@ function loadMorePokemon() {
 async function loadAPI() {
     try {
         showLoadingScreen();
-        BASE_URL = `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`;
-        const response = await fetch(BASE_URL);
-        const data = await response.json();
-        const results = data.results;
-
-        for (let index = 0; index < results.length; index++) {
-            const pokemonResponse = await fetch(results[index].url);
-            const pokemonData = await pokemonResponse.json();
-
-            let moveNames = [];
-            for (let i = 0; i < pokemonData.moves.length; i++) {
-                moveNames.push(pokemonData.moves[i].move.name);
-            }
-            pokemonFirstPush(index, results, pokemonData, moveNames);
-        }
-
+        const results = await fetchPokemonList();
+        await loadPokemonDetails(results);
         render();
         hideLoadingScreen();
-        return Promise.resolve(); // Return a resolved promise
+        return Promise.resolve();
     } catch (error) {
-        console.error('Fehler beim Abrufen der Daten:', error);
-        hideLoadingScreen();
-        return Promise.reject(error); // Return a rejected promise
+        handleApiError(error);
+        return Promise.reject(error);
     }
 }
+
+//Fetches the list of Pokemon from the API
+
+async function fetchPokemonList() {
+    BASE_URL = `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`;
+    const response = await fetch(BASE_URL);
+    const data = await response.json();
+    return data.results;
+}
+
+//Loads detailed data for each Pokemon in the results
+
+async function loadPokemonDetails(results) {
+    for (let index = 0; index < results.length; index++) {
+        const pokemonData = await fetchSinglePokemonData(results[index].url);
+        const moveNames = extractMoveNames(pokemonData);
+        pokemonFirstPush(index, results, pokemonData, moveNames);
+    }
+}
+
+//Fetches detailed data for a single Pokemon
+
+async function fetchSinglePokemonData(url) {
+    const pokemonResponse = await fetch(url);
+    return await pokemonResponse.json();
+}
+
+//Handles API errors
+
+function handleApiError(error) {
+    console.error('Fehler beim Abrufen der Daten:', error);
+    hideLoadingScreen();
+}
+
 
 // Push first Data in the pokemon array
 
@@ -76,21 +95,16 @@ function render() {
     const mainElement = document.getElementById('main-elements');
     mainElement.innerHTML = '';
     const moreButton = document.getElementById('next-pokemon');
-
     if (pokemon.length === 0) {
-        mainElement.innerHTML = `
-            <div class="no-results">
-                <h2>No Pokémon found</h2>
-                <p>Try a different search term.</p>
-            </div>
-        `;
+        noPokemonFound(mainElement);
         moreButton.classList.add('d-none');
         return;
     }
     moreButton.classList.remove('d-none');
-
     for (let index = 0; index < pokemon.length; index++) {
-        renderPokemonCard(index);
+        let mainElement = document.getElementById('main-elements');
+        renderPokemonCard(index, mainElement);
+        renderTypesElements(index);
     }
 }
 
@@ -109,56 +123,99 @@ function hideLoadingScreen() {
 //Filters Pokemon based on the search input and renders the filtered results
 
 async function filterPokemon() {
-    let searchInput = document.getElementById('search-input');
-    let searchTerm = searchInput.value.toLowerCase();
-    let searchHint = document.getElementById('search-hint');
+    const searchTerm = getSearchTerm();
+
+    if (!validateSearchTerm(searchTerm)) {
+        return;
+    }
+
+    if (searchTerm === '') {
+        resetAndLoadAllPokemon();
+    } else if (searchTerm.length >= 3) {
+        await searchAndLoadFilteredPokemon(searchTerm);
+    }
+}
+
+//Gets the search term from the input field
+
+function getSearchTerm() {
+    const searchInput = document.getElementById('search-input');
+    return searchInput.value.toLowerCase();
+}
+
+//Validates the search term and shows/hides hint message
+
+function validateSearchTerm(searchTerm) {
+    const searchHint = document.getElementById('search-hint');
 
     if (searchTerm.length > 0 && searchTerm.length < 3) {
         searchHint.textContent = "Please enter at least 3 letters";
         searchHint.classList.remove('d-none');
-        return;
+        return false;
     } else {
         searchHint.classList.add('d-none');
-    }
-
-    if (searchTerm === '') {
-        offset = 0;
-        pokemon = [];
-        loadAPI();
-    } else if (searchTerm.length >= 3) {
-        showLoadingScreen();
-        try {
-            let response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1000`);
-            let data = await response.json();
-            let allResults = data.results;
-
-            let filteredResults = [];
-
-            for (let i = 0; i < allResults.length; i++) {
-                let pokemonName = allResults[i].name.toLowerCase();
-
-                if (pokemonName.startsWith(searchTerm)) {
-                    filteredResults.push(allResults[i]);
-                }
-            }
-            pokemon = [];
-
-            for (let i = 0; i < filteredResults.length; i++) {
-                const pokemonResponse = await fetch(filteredResults[i].url);
-                const pokemonData = await pokemonResponse.json();
-
-                let moveNames = [];
-                for (let j = 0; j < pokemonData.moves.length; j++) {
-                    moveNames.push(pokemonData.moves[j].move.name);
-                }
-            }
-            render();
-        } catch (error) {
-            console.error('Fehler bei der Suche:', error);
-        }
-        hideLoadingScreen();
+        return true;
     }
 }
+
+//Resets the pokemon array and loads all pokemon
+
+function resetAndLoadAllPokemon() {
+    offset = 0;
+    pokemon = [];
+    loadAPI();
+}
+
+//Searches for and loads filtered pokemon based on search term
+
+async function searchAndLoadFilteredPokemon(searchTerm) {
+    showLoadingScreen();
+    try {
+        const filteredResults = await fetchAndFilterPokemon(searchTerm);
+        await loadFilteredPokemonData(filteredResults);
+        render();
+    } catch (error) {
+        console.error('Fehler bei der Suche:', error);
+    }
+    hideLoadingScreen();
+}
+
+//Fetches all pokemon and filters by name
+
+async function fetchAndFilterPokemon(searchTerm) {
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1000`);
+    const data = await response.json();
+    const allResults = data.results;
+
+    return allResults.filter(result =>
+        result.name.toLowerCase().startsWith(searchTerm)
+    );
+}
+
+//Loads detailed data for filtered pokemon
+
+async function loadFilteredPokemonData(filteredResults) {
+    pokemon = [];
+
+    for (let i = 0; i < filteredResults.length; i++) {
+        const pokemonResponse = await fetch(filteredResults[i].url);
+        const pokemonData = await pokemonResponse.json();
+        const moveNames = extractMoveNames(pokemonData);
+
+        pokemonSecondPush(i, filteredResults, pokemonData, moveNames);
+    }
+}
+
+//Extracts move names from pokemon data
+
+function extractMoveNames(pokemonData) {
+    const moveNames = [];
+    for (let j = 0; j < pokemonData.moves.length; j++) {
+        moveNames.push(pokemonData.moves[j].move.name);
+    }
+    return moveNames;
+}
+
 
 // Push second Data in the pokemon array
 
@@ -193,8 +250,11 @@ function openDetails(index) {
     document.getElementById('overlay-click').classList.remove('d-none');
     document.body.classList.add('overlay-open');
     document.body.style.overflow = 'hidden';
-    currentPokemonIndex = index; // Store the current index
-    getRenderPokemonDetails(index);
+    currentPokemonIndex = index;
+
+    document.getElementById('overlay-click').classList.remove('overlay-d-none');
+    let detailsContainer = document.getElementById('pokemon-details-container');
+    getRenderPokemonDetails(index, detailsContainer);
 }
 
 // Closes the details overlay and restores normal scrolling
@@ -207,16 +267,13 @@ function closeDetails() {
 
 // Generates HTML for displaying a Pokemon's moves
 
-function getPokemonMoves(index) {
-    if (!pokemon[index].moves || pokemon[index].moves.length === 0) {
-        return '<p>No moves available</p>';
-    }
-
+function pokemonMoves(index) {
     let movesHTML = '';
     const maxMoves = pokemon[index].moves.length;
 
     for (let i = 0; i < maxMoves; i++) {
         const moveName = pokemon[index].moves[i].replace(/-/g, ' ');
+
         movesHTML += `<span class="move-pill">${moveName}</span>`;
     }
 
@@ -244,11 +301,6 @@ function removeTab() {
     document.getElementById('main-tab').classList.remove('active');
     document.getElementById('stats-tab').classList.remove('active');
     document.getElementById('moves-tab').classList.remove('active');
-}
-
-// Removes the active class from all tab buttons
-
-function removeTabButton() {
     document.getElementById('main-button').classList.remove('active');
     document.getElementById('stats-button').classList.remove('active');
     document.getElementById('moves-button').classList.remove('active');
@@ -291,4 +343,23 @@ function nextPokemon() {
 
 function getCurrentPokemonIndex() {
     return currentPokemonIndex;
+}
+
+// index of the Pokemon Types in the pokemon array
+
+function pokemonTypes(index) {
+    let typesHTML = '';
+    for (let i = 0; i < pokemon[index].types.length; i++) {
+        typesHTML += getPokemonTypesHTML(index, i);
+    }
+    return typesHTML;
+}
+
+
+// index of the Pokemon Types icon in the pokemon array
+
+function renderTypesElements(index) {
+    for (let i = 0; i < pokemon[index].types.length; i++) {
+        getRenderTypesElements(index, i)
+    }
 }

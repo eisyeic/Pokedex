@@ -1,12 +1,8 @@
 //Renders Pokemon cards for newly loaded Pokemon to the main element
 
-function getRenderPokemon() {
-    const mainElement = document.getElementById('main-elements');
-    const startIndex = pokemon.length - limit;
-
-    for (let index = startIndex; index < pokemon.length; index++) {
-        mainElement.innerHTML +=
-            `<div class="pokemon-container">
+function getRenderPokemon(index, mainElement) {
+    mainElement.innerHTML +=
+        `<div class="pokemon-container">
                 <div class="pokemon-header">
                     <h1>#${pokemon[index].id}</h1>
                     <h1>${pokemon[index].name.charAt(0).toUpperCase() + pokemon[index].name.slice(1)}</h1>
@@ -16,26 +12,21 @@ function getRenderPokemon() {
                     
                 </div>
             </div>`;
-
-        getRenderTypesElements(index);
-    }
 }
 
-//Renders the type icons for a specific Pokemon
+// Renders the type icons for a specific Pokemon
 
-function getRenderTypesElements(index) {
-    for (let i = 0; i < pokemon[index].types.length; i++) {
-        document.getElementById(`types-elements-${index}`).innerHTML +=
-            `<div class="types-icon background-${pokemon[index].types[i].type.name}">
+function getRenderTypesElements(index, i) {
+    document.getElementById(`types-elements-${index}`).innerHTML +=
+        `<div class="types-icon background-${pokemon[index].types[i].type.name}">
             <img src="./assers/icons/${pokemon[index].types[i].type.name}.svg">
             </div>`
-    }
 }
+
 
 // Renders a single Pokemon card with click functionality to open details
 
-function renderPokemonCard(index) {
-    const mainElement = document.getElementById('main-elements');
+function renderPokemonCard(index, mainElement) {
     mainElement.innerHTML +=
         `<div class="pokemon-container" onclick="openDetails(${index})">
             <div class="pokemon-header">
@@ -47,15 +38,11 @@ function renderPokemonCard(index) {
                 
             </div>
         </div>`;
-
-    getRenderTypesElements(index);
 }
 
 // Renders the detailed view of a Pokemon in the overlay
 
-function getRenderPokemonDetails(index) {
-    document.getElementById('overlay-click').classList.remove('overlay-d-none');
-    let detailsContainer = document.getElementById('pokemon-details-container');
+function getRenderPokemonDetails(index, detailsContainer) {
 
     detailsContainer.innerHTML = `
         <div class="pokemon-details-header">
@@ -72,7 +59,7 @@ function getRenderPokemonDetails(index) {
             <div onclick="lastPokemon()">
                 <img class="pokemon-details-types-button" src="./assers/icons/pfeil_links.png">
             </div>
-            <div class="pokemon-details-types-icons">${getPokemonTypesHTML(index)}</div>
+            <div class="pokemon-details-types-icons">${pokemonTypes(index)}</div>
             <div onclick="nextPokemon()"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           tPokemon()">
                 <img class="pokemon-details-types-button" src="./assers/icons/pfeil_rechts.png">
             </div>
@@ -157,7 +144,7 @@ function getRenderPokemonDetails(index) {
 
             <div id="moves-tab" class="d-none-tab">
                 <div class="pokemon-moves">
-                    <div class="moves-container">${getPokemonMoves(index)}
+                    <div class="moves-container">${pokemonMoves(index)}
                     </div>
                 </div>
             </div>
@@ -166,13 +153,19 @@ function getRenderPokemonDetails(index) {
 
 // Generates HTML for displaying a Pokemon's type icons
 
-function getPokemonTypesHTML(index) {
-    let typesHTML = '';
-    for (let i = 0; i < pokemon[index].types.length; i++) {
-        typesHTML += `
+function getPokemonTypesHTML(index, i) {
+    return `
         <div class="types-icon background-${pokemon[index].types[i].type.name}">
             <img src="./assers/icons/${pokemon[index].types[i].type.name}.svg">
         </div>`;
-    }
-    return typesHTML;
+}
+
+// Get HTML if not found a pokemon
+
+function noPokemonFound(mainElement) {
+    mainElement.innerHTML = `
+            <div class="no-results">
+                <h2>No Pokémon found</h2>
+                <p>Try a different search term.</p>
+            </div>`;
 }

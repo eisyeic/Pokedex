@@ -9,6 +9,26 @@ body {
     font-family: "PT Sans", cursive;
 }
 
+::-webkit-scrollbar {
+  width: 12px;
+  height: 0;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(56, 97, 168, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(255, 202, 28);
+  border-radius: 10px;
+  border: 2px solid rgb(56, 97, 168);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(46, 80, 140);
+}
+
 .overlay-style {
     background-color: rgba(0, 0, 0, 0.5);
     height: 100vh;
@@ -70,6 +90,29 @@ header {
         border-radius: 5px;
     }
 }
+
+.input-header input {
+    height: 50px;
+    width: 250px;
+    border-radius: 5px;
+    background-color: rgba(56, 97, 168, 0.1);
+    border: 2px solid rgb(56, 97, 168);
+    color: white;
+    padding: 0 15px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.input-header input:focus {
+    outline: none;
+    border-color: rgb(255, 202, 28);
+    box-shadow: 0 0 8px rgba(255, 202, 28, 0.6);
+}
+
+.input-header input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
 
 .search-hint {
     font-size: 12px;
