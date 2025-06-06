@@ -284,7 +284,6 @@ function pokemonMoves(index) {
 
 function changeTab(tabId, buttonId) {
     removeTab();
-    removeTabButton();
     activateTab(tabId, buttonId);
 }
 
